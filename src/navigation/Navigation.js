@@ -16,7 +16,7 @@ export const Navigation = () => {
                 initialRouteName="account"
                 tabBarOptions={{
                   inactiveTintColor: "#646464",
-                  activeTintColor: "#00a680",
+                  activeTintColor: "#F05C3C",
                 }}
                 screenOptions={({ route }) => ({
                     tabBarIcon: ({ color }) => screenOptions(route, color),
@@ -47,11 +47,15 @@ const screenOptions = (route, color) => {
   
     switch (route.name) {
       case "users":
-        iconName = "account-outline";
+        iconName = "account-multiple";
         break;
 
       case "addUser":
         iconName = "plus-box-outline";
+        break;
+
+      case "account":
+        iconName = "account-circle-outline";
         break;
   
       default:

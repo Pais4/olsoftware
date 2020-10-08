@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 import { isEmpty } from "lodash";
 import { useNavigation } from "@react-navigation/native";
@@ -13,7 +13,8 @@ export const RegisterForm = () => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        fullName: ''
+        fullName: '',
+        repeatPassword: ''
     });
 
     const onChange = (e, type) => {
@@ -24,13 +25,15 @@ export const RegisterForm = () => {
     };
 
     const onSubmit = () => {
-        if (isEmpty(formData.email) || isEmpty(formData.password)) {
-          return console.log('Vacio');
+        if (isEmpty(formData.email) || isEmpty(formData.password) || isEmpty(formData.fullName) || isEmpty(formData.repeatPassword)) {
+            return Alert.alert('All fields are required');
         }
     
         if (!validateEmail(formData.email)) {
-            return console.log('email invalido');
+            return Alert.alert('Invalid email');
         }
+
+        navigation.navigate('user')
 
       };
 
@@ -87,7 +90,7 @@ export const RegisterForm = () => {
                     placeholder="Repeat Password"
                     containerStyle={styles.inputForm}
                     secureTextEntry={showPassword}
-                    onChange={(e) => onChange(e, "password")}
+                    onChange={(e) => onChange(e, "repeatPassword")}
                     leftIcon={
                     <Icon
                         type="font-awesome-5"

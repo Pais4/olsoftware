@@ -31,6 +31,8 @@ export const LoginForm = () => {
             return console.log('email invalido');
         }
 
+        navigation.navigate('users');
+
       };
 
     return (
