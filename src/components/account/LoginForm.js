@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 import { isEmpty } from "lodash";
 import { useNavigation } from "@react-navigation/native";
@@ -24,11 +24,11 @@ export const LoginForm = () => {
 
     const onSubmit = () => {
         if (isEmpty(formData.email) || isEmpty(formData.password)) {
-          return console.log('Vacio');
+          return Alert.alert('All fields are required');
         }
     
         if (!validateEmail(formData.email)) {
-            return console.log('email invalido');
+            return Alert.alert('Invalid email')
         }
 
         navigation.navigate('users');
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
       width: '100%'
     },
     btnRegister: {
-      marginTop: 10,
+      marginTop: 5,
       color: "#F05C3C",
       width: '100%'
     },

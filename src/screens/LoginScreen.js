@@ -28,12 +28,12 @@ const styles = StyleSheet.create({
     imageView: {
         flex: 1,
         alignItems: 'center',
-        alignContent: 'center',
+        alignContent: 'center'
     },
     input: {
         flex: 1,
         alignItems: 'center',
         alignContent: 'center',
-    }
+    },
 })
 

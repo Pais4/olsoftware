@@ -1,10 +1,12 @@
 import React, { useState, useCallback } from 'react';
+import { Input } from 'react-native-elements';
 import { useFocusEffect } from '@react-navigation/native';
 import { firebaseApp } from '../utils/firebase'
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 
 import { ListUsers } from '../components/user/ListUsers';
+import { View } from 'react-native';
 
 const db = firebase.firestore(firebaseApp);
 
@@ -38,6 +40,12 @@ export const UserScreen = () => {
     );
 
     return (
-        <ListUsers users={users}/>
+        <View>
+            <Input
+                placeholder='Search'
+                leftIcon={{ type: 'material-community', name: 'magnify' }}
+            />
+            <ListUsers users={users}/>
+        </View>
     )
 }

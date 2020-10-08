@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { isEmpty, map } from "lodash";
-import { Input, Button } from 'react-native-elements';
+import { Input, Button, Avatar } from 'react-native-elements';
 import uuid from 'random-uuid-v4';
 import { useNavigation } from "@react-navigation/native";
+import * as Permissions from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker';
+import { size } from 'lodash';
 
 import { firebaseApp } from '../../utils/firebase';
 import firebase from 'firebase/app';
@@ -14,13 +17,12 @@ import { validateEmail } from '../../utils/validations';
 
 const db = firebase.firestore(firebaseApp);
 
-export const AddUserForm = (props) => {
-
-    const { imageSelectedUri } = props;
+export const AddUserForm = () => {
 
     const navigation = useNavigation();
     const [formData, setFormData] = useState(initialState);
     const [loading, setLoading] = useState(false);
+    const [imageSelectedUri, setimageSelectedUri] = useState([]);
 
     const uploadImageStorage = async() => {
 
@@ -50,6 +52,28 @@ export const AddUserForm = (props) => {
         return imageBlob;
     }
 
+    const imageSelected = async () => {
+        
+        const resultPermissions = await Permissions.askAsync(
+            Permissions.CAMERA_ROLL
+        );
+
+        if(resultPermissions === 'denied'){
+            Alert.alert('Permissions denied')
+        } else {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+                aspect: [4, 3]
+            })
+
+            if(result.cancelled){
+                Alert.alert("You haven´t pick an image")
+            } else {
+                setimageSelectedUri([result.uri])
+            }
+        }
+    }
+
     const onChange = (e, type) => {
         setFormData({
           ...formData,
@@ -58,8 +82,6 @@ export const AddUserForm = (props) => {
     };
 
     const onSubmit = () => {
-
-        console.log(formData);
 
         if (isEmpty(formData.email) || isEmpty(formData.lastName) || isEmpty(formData.age) || isEmpty(formData.position)) {
           return Alert.alert('All fields are required')
@@ -81,6 +103,7 @@ export const AddUserForm = (props) => {
                         .then(() => {
                             setLoading(false)
                             setFormData(initialState)
+                            setimageSelectedUri([])
                             navigation.navigate('users')
                         })
                         .catch(() => {
@@ -90,29 +113,44 @@ export const AddUserForm = (props) => {
                 })
         }
 
-
     };
 
     return (
         <View style={styles.formContainer}>
+            <View style={styles.avatarView}>
+                <Avatar
+                    size="xlarge"
+                    rounded
+                    onPress={imageSelected}
+                    source={
+                        (size(imageSelectedUri) > 0)
+                            ?  {uri: imageSelectedUri[0]}
+                            :  require('../../../assets/no-image.png')
+                    }
+                />
+            </View>
             <Input
                 placeholder="Email"
                 containerStyle={styles.inputForm}
+                value={formData.email}
                 onChange={(e) => onChange(e, "email")}
             />
             <Input
                 placeholder="Last Name"
                 containerStyle={styles.inputForm}
+                value={formData.lastName}
                 onChange={(e) => onChange(e, "lastName")}
             />
             <Input
                 placeholder="Age"
                 containerStyle={styles.inputForm}
+                value={formData.age}
                 onChange={(e) => onChange(e, "age")}
             />
             <Input
                 placeholder="Position"
                 containerStyle={styles.inputForm}
+                value={formData.position}
                 onChange={(e) => onChange(e, "position")}
             />
             <Button
@@ -143,6 +181,11 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingLeft: 40,
         paddingRight: 40
+    },
+    avatarView: {
+        flex: 1,
+        alignItems: 'center',
+        alignContent: 'center',
     },
     btnContainer: {
       marginTop: 20,
